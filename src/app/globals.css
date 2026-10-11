@@ -10,7 +10,11 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-suo: var(--font-suo-src);
+  --font-synt: var(--font-synt-src);
+  --font-feat: var(--font-feat-src);
 }
+
 
 @media (prefers-color-scheme: dark) {
   :root {
