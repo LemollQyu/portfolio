@@ -28,3 +28,99 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.flash-char {
+  position: relative;
+  display: inline-block;
+  isolation: isolate;
+  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition-delay: calc(var(--i) * 14ms);
+}
+
+/* dua bayangan: salinan huruf yang tertinggal di belakang */
+.flash-char::before,
+.flash-char::after {
+  content: attr(data-char);
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -1;
+  opacity: 0;
+  pointer-events: none;
+  filter: blur(1px);
+}
+.flash-char::before {
+  transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition-delay: calc(var(--i) * 14ms + 60ms);
+}
+.flash-char::after {
+  transition: transform 0.95s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition-delay: calc(var(--i) * 14ms + 120ms);
+  filter: blur(2px);
+}
+
+/* hover: huruf melebar ke kanan, makin ke ujung makin jauh */
+.flash-line:hover .flash-char,
+.flash-line:hover .flash-char::before,
+.flash-line:hover .flash-char::after {
+  transform: translateX(calc(var(--i) * 0.05em));
+}
+
+/* bayangan muncul sebentar lalu memudar, kayak jejak lari */
+.flash-line:hover .flash-char::before {
+  animation: flash-ghost 0.8s ease-out;
+}
+.flash-line:hover .flash-char::after {
+  animation: flash-ghost-2 1s ease-out;
+}
+
+@keyframes flash-ghost {
+  0%   { opacity: 0; }
+  25%  { opacity: 0.45; }
+  100% { opacity: 0; }
+}
+@keyframes flash-ghost-2 {
+  0%   { opacity: 0; }
+  30%  { opacity: 0.25; }
+  100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flash-char, .flash-char::before, .flash-char::after { transition: none; animation: none !important; }
+}
+
+/* Firefox */
+html {
+  scrollbar-width: none;
+}
+
+/* IE & Edge lama */
+html {
+  -ms-overflow-style: none;
+}
+
+/* Chrome, Safari, Edge (Chromium), Opera */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+*::-webkit-scrollbar {
+  display: none;
+}
+
+@media (pointer: fine) {
+  html,
+  body,
+  a,
+  button,
+  * {
+    cursor: none !important;
+  }
+}

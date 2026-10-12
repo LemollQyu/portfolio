@@ -11,31 +11,30 @@ const texts = [
   "ENJOY THE EXPERIENCE",
 ];
 
-// [durasi, delay, offset] per band & baris
+// [durasi, delay, offset] per band & baris (delay positif = masuk bertahap)
 const timing: [number, number, number][][] = [
   [
-    [4.2, -0.5, -30],
-    [4.0, -1.3, 22],
-    [4.4, -0.1, -46],
-    [4.1, -1.8, 36],
-    [4.3, -0.9, 8],
+    [4.2, 0.0, -30],
+    [4.0, 0.15, 22],
+    [4.4, 0.3, -46],
+    [4.1, 0.45, 36],
+    [4.3, 0.6, 8],
   ],
   [
-    [4.4, -0.8, 28],
-    [4.1, -1.1, -38],
-    [4.3, -0.3, 44],
-    [4.5, -2.0, -15],
-    [4.2, -0.05, 20],
+    [4.4, 0.2, 28],
+    [4.1, 0.35, -38],
+    [4.3, 0.5, 44],
+    [4.5, 0.65, -15],
+    [4.2, 0.8, 20],
   ],
   [
-    [4.1, -1.4, -34],
-    [4.3, -0.4, 40],
-    [4.0, -1.0, -18],
-    [4.5, -2.2, 34],
-    [4.2, -0.2, -5],
+    [4.1, 0.4, -34],
+    [4.3, 0.55, 40],
+    [4.0, 0.7, -18],
+    [4.5, 0.85, 34],
+    [4.2, 1.0, -5],
   ],
 ];
-
 type Col = { flex: number; duration: number; delay: number; steps: number };
 
 export default function Loader({ duration = 8000 }: { duration?: number }) {
@@ -62,7 +61,10 @@ export default function Loader({ duration = 8000 }: { duration?: number }) {
     const start = performance.now();
     let raf = 0;
     const tick = (now: number) => {
-      const n = Math.min(100, Math.floor(((now - start) / duration) * 100));
+      const n = Math.max(
+        0,
+        Math.min(100, Math.floor(((now - start) / duration) * 100)),
+      );
       setPercent(n);
       if (n < 100) raf = requestAnimationFrame(tick);
     };

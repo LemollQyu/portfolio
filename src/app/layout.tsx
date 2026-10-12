@@ -1,6 +1,7 @@
 import localFont from "next/font/local";
 import "./globals.css";
 import Sidebars from "@/components/Sidebars";
+import CursorTrail from "@/components/CursorTrail";
 
 const suo = localFont({
   src: "../../public/fonts/suo-4.woff2",
@@ -27,7 +28,8 @@ export default function RootLayout({
       lang="id"
       className={`${suo.variable} ${synt.variable} ${feat.variable}`}
     >
-      <body className="min-h-screen ">
+      <body className="">
+        <CursorTrail />
         <Sidebars />
         {children}
       </body>
