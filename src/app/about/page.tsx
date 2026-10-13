@@ -2,6 +2,8 @@ import Image from "next/image";
 import Edge from "@/components/Edge";
 import SmoothScroll from "@/components/SmoothScroll";
 import type { CSSProperties } from "react";
+import ShatterPhoto1 from "@/components/ShatterPhoto1";
+import ShatterPhoto2 from "@/components/ShatterPhoto2";
 
 const NAME = "Annas Aulia Rahman";
 const ROLE = "Frontend & Backend Developer";
@@ -9,7 +11,7 @@ const ROLE = "Frontend & Backend Developer";
 const LIGHT = "#f4f3f0";
 const DARK = "#141414";
 
-const head = ["Building", "digital experiences", "that matter."];
+const head = ["Building", "experiences", "that matter."];
 
 // GARIS selebar layar, di LUAR kotak elemen (tidak menimpa isi).
 // Harus ditulis literal penuh agar terbaca Tailwind.
@@ -61,7 +63,7 @@ export default function About() {
 
       {/* 1. HERO */}
       <section
-        className="relative flex min-h-screen flex-col items-center justify-between px-[54px] pb-10 pt-12 text-center text-[#141414]"
+        className="relative flex min-h-screen flex-col items-center justify-between px-[54px] pb-10 pt-2 text-center text-[#141414]"
         style={{ background: LIGHT }}
       >
         <div className="w-full">
@@ -76,15 +78,14 @@ export default function About() {
             {ROLE}
           </p>
           <div className={`${lineBoth} mt-4 sm:mt-8 mx-auto w-55`}>
-            <div className="relative h-35 w-55">
-              <Image
-                src="/photo/1.webp"
-                alt={NAME}
-                sizes="220px"
-                width={440}
-                height={280}
-                className="h-full w-full object-cover grayscale"
-                priority
+            <div className="relative">
+              <ShatterPhoto2
+                label={NAME}
+                className="w-55"
+                aspect={11 / 7}
+                bg="/photo/bg2.webp"
+                person="/photo/person2.webp"
+                focusY={0.7}
               />
               <span className="absolute bottom-0 right-full mr-1.5 font-synt text-[10px] leading-none">
                 (09)
@@ -180,14 +181,8 @@ export default function About() {
             pad=""
             line={false}
           >
-            <div className="relative aspect-[3/4] w-[min(70vw,300px)] ">
-              <Image
-                src="/photo/4.webp"
-                alt={`${NAME} duduk di bukit`}
-                fill
-                sizes="300px"
-                className="object-cover grayscale transition duration-700 hover:grayscale-0"
-              />
+            <div className="relative">
+              <ShatterPhoto1 label={`${NAME} duduk di bukit`} />
               <span className="absolute bottom-0 right-full mr-1.5 font-synt text-[10px] leading-none">
                 (22)
               </span>
@@ -262,14 +257,15 @@ export default function About() {
           </div>
 
           {/* FOTO */}
+          {/* FOTO */}
           <div className={`${lineBottom} flex justify-center`}>
-            <div className="relative aspect-[3/4] w-[min(55vw,240px)]">
-              <Image
-                src="/photo/3.webp"
-                alt={NAME}
-                fill
-                sizes="240px"
-                className="object-cover grayscale transition duration-700 hover:grayscale-0"
+            <div className="relative">
+              <ShatterPhoto2
+                label={NAME}
+                className="w-[min(55vw,240px)]"
+                aspect={3 / 4}
+                bg="/photo/3.webp"
+                person="/photo/person3.webp"
               />
               <span className="absolute bottom-0 right-full mr-1.5 font-synt text-[10px] leading-none">
                 (10)
