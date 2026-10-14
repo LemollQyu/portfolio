@@ -1,0 +1,235 @@
+/* Titik gantung = tengah atas .hb-root. Taruh .hb-root di tepi atas halaman
+   (mis. fixed top-0) supaya tali terlihat keluar dari layar. */
+.hb-root {
+  --hb-sway-angle: 2.5deg; /* seberapa jauh ayunan */
+  --hb-sway-duration: 3s; /* durasi satu arah; makin besar makin santai */
+  --hb-strap-height: 140px; /* mobile: tali terlihat 140 - 80 = 60px */
+
+  position: relative;
+  width: 210px;
+  height: 0; /* tidak memakan ruang layout; kartu menggantung ke bawah */
+  z-index: 40;
+}
+
+.hb-swing {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 210px;
+  transform-origin: 105px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  outline: none;
+  will-change: transform;
+  animation: hb-sway var(--hb-sway-duration) ease-in-out infinite alternate;
+}
+
+@keyframes hb-sway {
+  from {
+    transform: rotate(calc(var(--hb-sway-angle) * -1));
+  }
+  to {
+    transform: rotate(var(--hb-sway-angle));
+  }
+}
+
+@media (min-width: 768px) {
+  .hb-root {
+    --hb-strap-height: 160px; /* desktop: tali terlihat 200 - 80 = 120px */
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hb-swing {
+    animation: none;
+  }
+}
+
+.hb-swing:focus-visible .hb-card {
+  outline: 2px solid #a8a29e;
+  outline-offset: 3px;
+}
+
+/* tali: mulai 80px di atas titik gantung agar ujungnya tidak kelihatan saat berayun */
+.hb-strap {
+  width: 26px;
+  height: var(--hb-strap-height);
+  margin-top: -80px;
+  position: relative;
+  z-index: 0;
+  background: #292524;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+.hb-strap::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.2;
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(255, 255, 255, 0.35) 2px,
+    rgba(255, 255, 255, 0.35) 3px
+  );
+}
+.hb-strap span {
+  position: absolute;
+  left: 50%;
+  bottom: 38%;
+  transform: translateX(-50%) rotate(-90deg);
+  color: rgba(255, 255, 255, 0.55);
+  white-space: nowrap;
+}
+
+.hb-clip {
+  width: 28px;
+  height: 18px;
+  margin-top: -4px;
+  position: relative;
+  z-index: 2;
+  background: linear-gradient(180deg, #a8a29e, #57534e);
+  border-radius: 3px 3px 8px 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.hb-card-wrap {
+  width: 210px;
+  margin-top: -8px;
+  position: relative;
+  z-index: 1;
+}
+.hb-card {
+  position: relative;
+  padding: 6px;
+  border-radius: 16px;
+  background: linear-gradient(170deg, #57534e 0%, #44403c 15%, #292524 60%, #1c1917 100%);
+  border-top: 1.5px solid rgba(255, 255, 255, 0.15);
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  border-right: 1px solid rgba(0, 0, 0, 0.3);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.4);
+  box-shadow: 0 18px 30px -12px rgba(0, 0, 0, 0.45);
+}
+.hb-gloss {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  border-radius: 16px;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    rgba(255, 255, 255, 0.14) 0%,
+    rgba(255, 255, 255, 0.04) 15%,
+    transparent 40%,
+    transparent 85%,
+    rgba(255, 255, 255, 0.03) 100%
+  );
+}
+.hb-slot {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  padding-top: 4px;
+}
+.hb-slot i {
+  display: block;
+  width: 32px;
+  height: 6px;
+  border-radius: 999px;
+  border: 1px solid rgba(168, 162, 158, 0.5);
+  background: linear-gradient(180deg, #1c1917, #292524);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.hb-inner {
+  position: relative;
+  z-index: 10;
+  margin-top: 4px;
+  overflow: hidden;
+  border-radius: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+}
+.hb-head {
+  position: relative;
+  padding: 18px 16px;
+  background: linear-gradient(175deg, #6b6560 0%, #57534e 20%, #44403c 100%);
+}
+.hb-head::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.12;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.8) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+.hb-head > * {
+  position: relative;
+}
+.hb-name {
+  margin: 0;
+  color: #fff;
+}
+.hb-tag {
+  margin: 8px 0 0;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.hb-photo-area {
+  display: flex;
+  justify-content: center;
+  padding: 22px 16px;
+  background: linear-gradient(180deg, #1c1917, #0c0a09);
+}
+.hb-avatar {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 128px;
+  height: 128px;
+  overflow: hidden;
+  border-radius: 50%;
+  border: 3px solid #57534e;
+  background: #57534e;
+  color: rgba(255, 255, 255, 0.85);
+}
+.hb-media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* foto statis tampil dulu; GIF muncul saat hover */
+.hb-still,
+.hb-hover {
+  transition: opacity 300ms ease;
+}
+.hb-hover {
+  opacity: 0;
+}
+.hb-swing:hover .hb-hover {
+  opacity: 1;
+}
+.hb-swing:hover .hb-still {
+  opacity: 0;
+}
+
+@media (hover: none) {
+  /* di layar sentuh tidak ada hover, jadi tetap tampil foto statis */
+  .hb-swing:hover .hb-hover {
+    opacity: 0;
+  }
+  .hb-swing:hover .hb-still {
+    opacity: 1;
+  }
+}

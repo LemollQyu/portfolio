@@ -2,6 +2,8 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Sidebars from "@/components/Sidebars";
 import CursorTrail from "@/components/CursorTrail";
+import Loader from "@/components/Loader";
+import PageTransitionProvider from "@/components/PageTransition";
 
 const suo = localFont({
   src: "../../public/fonts/suo-4.woff2",
@@ -29,9 +31,12 @@ export default function RootLayout({
       className={`${suo.variable} ${synt.variable} ${feat.variable}`}
     >
       <body className="">
-        <CursorTrail />
-        <Sidebars />
-        {children}
+        <PageTransitionProvider>
+          <Loader duration={5000} />
+          <CursorTrail />
+          <Sidebars />
+          {children}
+        </PageTransitionProvider>
       </body>
     </html>
   );

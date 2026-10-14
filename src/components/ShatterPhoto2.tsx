@@ -18,7 +18,7 @@ import { createPortal } from "react-dom";
 
 // ---- efek ----
 const RADIUS = 46; // radius sapuan mouse (css px)
-const STEP = 1.5; // ukuran sel partikel (css px). Makin kecil = makin halus, makin berat
+const STEP = 3; // ukuran sel partikel (css px). Makin kecil = makin halus, makin berat
 const PUSH = 0.55; // seberapa kuat serpihan terbawa arah gesekan
 const SCATTER = 1.6; // seberapa acak serpihan menyebar
 const HOLD = 1400; // ms serpihan melayang sebelum mulai kembali

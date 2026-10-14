@@ -264,7 +264,7 @@ export default function About() {
                 label={NAME}
                 className="w-[min(55vw,240px)]"
                 aspect={3 / 4}
-                bg="/photo/3.webp"
+                bg="/photo/bg3.webp"
                 person="/photo/person3.webp"
               />
               <span className="absolute bottom-0 right-full mr-1.5 font-synt text-[10px] leading-none">

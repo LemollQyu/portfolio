@@ -1,0 +1,42 @@
+.pt-curtain {
+  --bg: #141414;
+  --ease: cubic-bezier(0.76, 0, 0.24, 1);
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  display: flex;
+}
+.pt-curtain.pt-reveal {
+  pointer-events: none;
+}
+.pt-curtain i {
+  display: block;
+  height: 100%;
+  background: var(--bg);
+  box-shadow: 0 0 0 0.5px var(--bg); /* tutup celah tipis antar kolom */
+  transform: scaleY(0);
+  transform-origin: top;
+  will-change: transform;
+  animation-fill-mode: both;
+  animation-timing-function: var(--ease);
+}
+
+/* cover: tumbuh dari atas ke bawah */
+.pt-cover i {
+  transform-origin: top;
+  animation-name: pt-cover;
+}
+/* reveal: menyusut ke bawah, tepi atas turun sampai hilang */
+.pt-reveal i {
+  transform-origin: bottom;
+  animation-name: pt-reveal;
+}
+
+@keyframes pt-cover {
+  from { transform: scaleY(0); }
+  to   { transform: scaleY(1); }
+}
+@keyframes pt-reveal {
+  from { transform: scaleY(1); }
+  to   { transform: scaleY(0); }
+}

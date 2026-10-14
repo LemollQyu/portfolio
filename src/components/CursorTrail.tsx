@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-const SRC = "/cursor-lily.png";
+const SRC = "/cursor-lily.webp";
 const W = 44; // lebar cursor (px)
 const H = 59; // tinggi cursor (px), rasio gambar 140:200
 const TRAIL = 7; // jumlah bayangan
