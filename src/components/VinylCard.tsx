@@ -110,6 +110,11 @@ const VINYL_CSS = `
     animation: none;
   }
 }
+
+@media (max-width: 767px) {
+  .vinyl-tilt { transform: none; }
+  .vinyl-link:hover .vinyl-tilt { transform: translateY(-4px) scale(1.04); }
+}
 `;
 
 type VinylCardProps = {
@@ -118,7 +123,7 @@ type VinylCardProps = {
   title?: string;
   subtitle?: string;
   tagline?: string;
-  /** Kelas posisi, mis. "absolute left-[40px] top-[410px]" */
+  caption?: string; // teks ringkas untuk mobile
   className?: string;
 };
 
@@ -183,8 +188,8 @@ export default function VinylCard({
   href = "#",
   label = "Playlist",
   title = "Music",
-
   tagline = "Learning by building",
+  caption = "Vibe coding playlist",
   className = "absolute left-[40px] top-[410px]",
 }: VinylCardProps) {
   return (
@@ -194,31 +199,32 @@ export default function VinylCard({
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        className={`vinyl-link vinyl-entrance hidden lg:block z-30 cursor-pointer ${className}`}
+        className={`vinyl-link vinyl-entrance block z-30 cursor-pointer ${className}`}
         style={{ overflow: "visible" }}
       >
-        <div className="vinyl-tilt relative w-[240px]">
-          {/* Border gradien hijau-kuning yang berputar */}
-          <div className="vinyl-border pointer-events-none absolute inset-[-1.5px] rounded-2xl" />
+        <div className="vinyl-tilt relative w-[140px] md:w-[240px]">
+          <div className="vinyl-border pointer-events-none absolute inset-[-1.5px] rounded-xl md:rounded-2xl" />
 
-          {/* Kartu */}
-          <div className="vinyl-card relative flex w-full flex-col items-center overflow-hidden rounded-2xl border border-stone-200 bg-white pb-6 pt-6 shadow-sm">
-            {/* Warna hijau & kuning yang mengalir di dalam kartu */}
+          <div className="vinyl-card relative flex w-full flex-col items-center overflow-hidden rounded-xl border border-stone-200 bg-white pb-3 pt-3 shadow-sm md:rounded-2xl md:pb-6 md:pt-6">
             <div className="vinyl-blobs pointer-events-none absolute inset-0">
               <div className="vinyl-blob vinyl-blob-1" />
               <div className="vinyl-blob vinyl-blob-2" />
               <div className="vinyl-blob vinyl-blob-3" />
             </div>
 
-            {/* Tekstur noise */}
             <div className="vinyl-noise pointer-events-none absolute inset-0" />
 
-            {/* Vinyl: membesar sedikit saat hover, berputar, bayangan lembut */}
-            <div className="vinyl-shadow relative z-[1] h-36 w-36">
+            <div className="vinyl-shadow relative z-[1] h-[84px] w-[84px] md:h-36 md:w-36">
               <VinylDisc className="h-full w-full" />
             </div>
 
-            <div className="relative z-[1] mt-4 text-center">
+            {/* Mobile: satu baris teks saja */}
+            <p className="relative z-[1] mt-2 px-2 text-center text-[11px] font-medium leading-tight text-stone-400 md:hidden">
+              {caption}
+            </p>
+
+            {/* Desktop: tampilan lengkap */}
+            <div className="relative z-[1] mt-4 hidden text-center md:block">
               <p className="mb-1 text-[10px] font-feat font-bold uppercase tracking-widest text-neutral-900">
                 {label}
               </p>
