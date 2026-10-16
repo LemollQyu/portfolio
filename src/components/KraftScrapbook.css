@@ -18,14 +18,34 @@
   }
 } */
 
-@media (min-width: 768px) {
+/* @media (min-width: 768px) {
   .ks-desk-card {
     --bar-gutter: 56px;
     position: absolute;
     top: auto;
-    bottom: 16px;
+    top: 380px;
     left: var(--bar-gutter);
     margin-inline: 0;
+    width: clamp(260px, 26vw, 320px);
+  }
+} */
+
+/* sm: 640px - 767px -> naik ke atas */
+@media (min-width: 640px) {
+  .ks-desk-card {
+    --bar-gutter: 56px;
+    position: absolute;
+    top: 50px;
+    left: var(--bar-gutter);
+    margin-inline: 0;
+    width: clamp(260px, 36vw, 320px);
+  }
+}
+
+/* md: 768px ke atas -> turun lagi */
+@media (min-width: 768px) {
+  .ks-desk-card {
+    top: 380px;
     width: clamp(260px, 26vw, 320px);
   }
 }
