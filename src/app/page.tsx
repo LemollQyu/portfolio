@@ -6,6 +6,8 @@ import FolderStickers from "@/components/FolderStickers";
 import CameraSticker from "@/components/Cameras";
 import HangingPadlock from "@/components/Key";
 import TerminalCard from "@/components/TerminalCard";
+import StickyNote from "@/components/StickyNote";
+import FinderWindow from "@/components/FinderWindow";
 
 export default function Home() {
   return (
@@ -69,7 +71,7 @@ export default function Home() {
         {/* Headline utama */}
         <h1
           className="md:text-9xl font-medium tracking-wide sm:text-8xl text-6xl
-             absolute md:top-3/5 sm:top-[40%] top-[45%]
+             absolute md:top-3/5 sm:top-[40%] top-[40%]
              -translate-y-1/2 left-1/2 -translate-x-1/2 font-suo"
         >
           <style>{`
@@ -156,7 +158,7 @@ export default function Home() {
              md:absolute md:-bottom-10 md:left-[29%] md:right-auto md:mx-0
              md:w-fit md:max-w-[calc(50vw-2rem)]"
         >
-          <TerminalCard title="annas — zsh" />
+          <TerminalCard title="lemoll — zsh" />
         </div>
 
         {/* Scrapbook */}
@@ -179,6 +181,19 @@ export default function Home() {
           />
         </div>
       </main>
+
+      <section
+        className="relative z-0 flex min-h-[70vh] mt-10 items-center justify-center
+             px-12 pb-24 pt-32 md:pt-40"
+      >
+        <div className="w-[clamp(240px,40vw,440px)]">
+          <StickyNote rotate={-3} />
+        </div>
+      </section>
+
+      <section className="relative z-0 px-6 pb-24 pt-32 md:pt-40">
+        <FinderWindow user="lemoll" />
+      </section>
     </>
   );
 }

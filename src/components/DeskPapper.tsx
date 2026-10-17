@@ -187,9 +187,10 @@ export default function DeskPaper({ className = "" }: Props) {
         <div className="dp-deco dp-sticky">
           <div className="dp-sheet font-synt">
             <span className="dp-ink font-suo text-lg">to do:</span>
-            ✓ ngopi
-            <br />✓ ngoding
-            <br />○ tidur
+            ✓ pray
+            <br /> ✓ coffe
+            <br />✓ code
+            <br />○ sleep (opsional)
           </div>
         </div>
         {/* END DEKORASI */}
