@@ -1,17 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import Image from "next/image";
+import { useState, useEffect, useRef, useCallback } from "react";
 
 /* ========================= DATA (ganti isinya) ========================= */
 
 type Folder = {
   id: string;
   title: string;
-  back: string; // warna belakang folder
-  front: string; // warna panel depan
-  shots: number; // jumlah kotak gambar di panel detail
+  back: string;
+  front: string;
+  shots: number;
+  cover?: string; // gambar utama (16:9)
+  images?: string[]; // gambar kecil di bawahnya (maks 3 tampil)
   desc: string[];
   button?: string;
+  href?: string; // tujuan tombol
 };
 
 const FOLDERS: Folder[] = [
@@ -21,11 +25,18 @@ const FOLDERS: Folder[] = [
     back: "#7EA4BE",
     front: "#8EB4CE",
     shots: 3,
+    cover: "/showcase/1.png",
+    images: [
+      "https://picsum.photos/seed/work1/1200/675",
+      "https://picsum.photos/seed/work2/1200/675",
+      "https://picsum.photos/seed/work3/1200/675",
+    ],
     desc: [
-      "Deskripsi singkat proyek kerja pertama. Ceritakan masalah, peranmu, dan hasilnya.",
-      "Paragraf kedua: teknologi yang dipakai atau hal yang kamu pelajari.",
+      "Paragraf pertama: ceritakan proyeknya, masalahnya, dan peranmu.",
+      "Paragraf kedua: teknologi yang dipakai dan hasilnya.",
     ],
     button: "Lihat detail",
+    href: "https://contoh.com/proyek",
   },
   {
     id: "ai",
@@ -108,10 +119,21 @@ const ACHIEVEMENTS = [
 ];
 
 const NOTES = [
-  { t: "Think deeply", c: "#5B9A82", x: 8, y: 62, r: -18 },
-  { t: "Detail-driven", c: "#6F9BC0", x: 38, y: 40, r: 14 },
-  { t: "Keep curious", c: "#C9A15B", x: 18, y: 22, r: -8 },
-  { t: "Ship it", c: "#9B86C0", x: 52, y: 66, r: 20 },
+  // x,y = posisi berserakan (%), tx,ty = posisi rapi saat hover (%)
+  { t: "Stay curious", c: "#C9A15B", x: 24, y: 72, r: -22, tx: 27, ty: 18 },
+  { t: "Data-driven", c: "#6F9BC0", x: 46, y: 84, r: 22, tx: 73, ty: 18 },
+  { t: "Think deeply", c: "#5B9A82", x: 14, y: 90, r: -4, tx: 27, ty: 50 },
+  { t: "Exploring often", c: "#CC6F6A", x: 58, y: 66, r: 20, tx: 73, ty: 50 },
+  {
+    t: "Learn by building",
+    c: "#5B8FA3",
+    x: 78,
+    y: 56,
+    r: -62,
+    tx: 27,
+    ty: 82,
+  },
+  { t: "Detail-focused", c: "#9B86C0", x: 72, y: 80, r: 16, tx: 73, ty: 82 },
 ];
 
 const JOURNEY = [
@@ -119,6 +141,7 @@ const JOURNEY = [
   { n: "02", t: "Kuliah Informatika", tag: "2020" },
   { n: "03", t: "Proyek pertama", tag: "2022" },
   { n: "04", t: "Lulus S.Kom.", tag: "2025" },
+  { n: "05", t: "Isi sesuai perjalananmu", tag: "NOW", now: true },
 ];
 
 const FUEL = [
@@ -126,7 +149,14 @@ const FUEL = [
   { l: "Tea", v: 0.5 },
   { l: "Music", v: 0.8 },
   { l: "Sunlight", v: 0.4 },
-  { l: "Mess", v: 0.6 },
+  { l: "Curiosity", v: 0.95 },
+  { l: "Ideas", v: 0.85 },
+];
+
+const FACT_PHOTOS: (string | undefined)[] = [
+  "https://picsum.photos/seed/fact1/600/600",
+  "https://picsum.photos/seed/fact2/600/600",
+  "https://picsum.photos/seed/fact3/600/600",
 ];
 
 type TabId = "projects" | "snapshot" | "achievements" | "garden";
@@ -137,6 +167,32 @@ const TABS: { id: TabId; label: string; path: string }[] = [
   { id: "achievements", label: "Achievements", path: "achievements" },
   { id: "garden", label: "Garden", path: "garden" },
 ];
+
+function Shot({
+  src,
+  ratio,
+  alt,
+}: {
+  src?: string;
+  ratio: string;
+  alt: string;
+}) {
+  if (!src) return <Placeholder ratio={ratio} />;
+  return (
+    <div
+      className="relative w-full overflow-hidden rounded-md border border-stone-300/50"
+      style={{ aspectRatio: ratio }}
+    >
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        sizes="(min-width: 1024px) 40vw, 90vw"
+        className="object-cover"
+      />
+    </div>
+  );
+}
 
 /* ========================= KOMPONEN KECIL ========================= */
 
@@ -319,13 +375,18 @@ function ProjectsTab() {
               ✕
             </button>
 
-            <Placeholder ratio="16 / 9" label="Gambar utama 16:9" />
+            <Shot src={current.cover} ratio="16 / 9" alt={current.title} />
 
             {current.shots > 1 && (
               <div className="mt-2 grid grid-cols-3 gap-2">
                 {Array.from({ length: Math.min(current.shots, 3) }).map(
                   (_, i) => (
-                    <Placeholder key={i} ratio="4 / 3" label={`${i + 1}`} />
+                    <Shot
+                      key={i}
+                      src={current.images?.[i]}
+                      ratio="4 / 3"
+                      alt={`${current.title} ${i + 1}`}
+                    />
                   ),
                 )}
               </div>
@@ -340,9 +401,14 @@ function ProjectsTab() {
               ))}
             </div>
             {current.button && (
-              <button className="mt-3 rounded-md border border-stone-300 bg-white px-3 py-1 text-[11px] text-stone-700 transition-colors hover:bg-stone-100">
+              <a
+                href={current.href ?? "#"}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-3 inline-block rounded-md border border-stone-300 bg-white px-3 py-1 text-[11px] text-stone-700 transition-colors hover:bg-stone-100"
+              >
                 {current.button}
-              </button>
+              </a>
             )}
           </div>
         )}
@@ -407,172 +473,371 @@ function AchievementsTab() {
 
 /* ========================= TAB: SNAPSHOT ========================= */
 
-function Radar() {
-  const cx = 50,
-    cy = 52,
-    r = 30;
-  const pt = (i: number, k: number) => {
-    const a = (-90 + (360 / FUEL.length) * i) * (Math.PI / 180);
-    return [cx + Math.cos(a) * r * k, cy + Math.sin(a) * r * k];
+const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
+const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
+
+/** progress per item supaya muncul satu per satu */
+const stag = (t: number, i: number, n: number, span = 0.5) => {
+  const start = (i * (1 - span)) / Math.max(1, n - 1);
+  return easeOut(clamp01((t - start) / span));
+};
+
+/** tween 0 -> 1. Awalnya sudah 1 (tampilan akhir), play() mengulang dari 0 */
+function useTween(duration = 1400) {
+  const [t, setT] = useState(1);
+  const raf = useRef(0);
+
+  const play = useCallback(() => {
+    cancelAnimationFrame(raf.current);
+    const start = performance.now();
+    setT(0);
+    const tick = (now: number) => {
+      const p = Math.min(1, (now - start) / duration);
+      setT(p);
+      if (p < 1) raf.current = requestAnimationFrame(tick);
+    };
+    raf.current = requestAnimationFrame(tick);
+  }, [duration]);
+
+  useEffect(() => () => cancelAnimationFrame(raf.current), []);
+  return [t, play] as const;
+}
+
+function useHover() {
+  const [on, setOn] = useState(false);
+  return {
+    on,
+    bind: {
+      onMouseEnter: () => setOn(true),
+      onMouseLeave: () => setOn(false),
+    },
   };
-  const poly = FUEL.map((f, i) => pt(i, f.v).join(",")).join(" ");
-  const ring = FUEL.map((_, i) => pt(i, 1).join(",")).join(" ");
-  return (
-    <svg viewBox="0 0 100 100" className="h-full w-full max-h-[130px]">
-      <polygon points={ring} fill="none" stroke="#d6d3d1" strokeWidth="0.6" />
-      <polygon
-        points={poly}
-        fill="rgba(110,160,190,0.35)"
-        stroke="#6EA0BE"
-        strokeWidth="0.8"
-      />
-      {FUEL.map((f, i) => {
-        const [x, y] = pt(i, 1.28);
-        return (
-          <text
-            key={f.l}
-            x={x}
-            y={y}
-            fontSize="5"
-            fill="#78716c"
-            textAnchor="middle"
-          >
-            {f.l}
-          </text>
-        );
-      })}
-    </svg>
-  );
 }
 
 function Card({
   title,
   children,
   className = "",
+  notebook = false,
+  ...rest
 }: {
   title: string;
   children: React.ReactNode;
   className?: string;
-}) {
+  notebook?: boolean;
+} & React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={`rounded-lg border border-stone-300/30 bg-white/70 p-3 shadow-[0_1px_3px_rgba(0,0,0,0.04)] ${className}`}
+      {...rest}
+      className={`relative flex min-h-0 flex-col overflow-hidden bg-white/85 p-4 ${
+        notebook
+          ? "rounded-md border-b-[5px] border-r-[5px] border-stone-800 pt-5"
+          : "rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.05)]"
+      } ${className}`}
     >
-      <p className="mb-2 font-mono text-[8px] uppercase tracking-[0.15em] text-stone-400">
+      {notebook && (
+        <div
+          aria-hidden
+          className="absolute inset-x-0 top-0 h-[6px] border-b-2 border-dashed border-stone-400"
+        />
+      )}
+      <p className="mb-2 font-mono text-[9px] uppercase tracking-[0.15em] text-stone-400">
         {title}
       </p>
-      {children}
+      <div className="relative min-h-0 flex-1">{children}</div>
     </div>
   );
 }
 
-function SnapshotTab() {
-  const [fact, setFact] = useState(0);
+/* 1. Design notes: jatuh dari atas, hover = rapi */
+function DesignNotesCard() {
+  const { on, bind } = useHover();
+  const [dropped, setDropped] = useState(false);
+
+  useEffect(() => {
+    const id = setTimeout(() => setDropped(true), 150);
+    return () => clearTimeout(id);
+  }, []);
+
   return (
-    <div className="h-full overflow-y-auto p-3 lg:p-4">
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Card title="Design notes" className="col-span-2 lg:col-span-1">
-          <div className="relative h-[110px] overflow-hidden rounded bg-white">
-            {NOTES.map((n) => (
-              <span
-                key={n.t}
-                className="absolute whitespace-nowrap rounded-full px-2 py-0.5 text-[9px] font-medium text-white"
-                style={{
-                  background: n.c,
-                  left: `${n.x}%`,
-                  top: `${n.y}%`,
-                  transform: `rotate(${n.r}deg)`,
-                }}
-              >
-                {n.t}
-              </span>
-            ))}
-          </div>
-        </Card>
-
-        <Card title="Energy level">
-          <div className="flex flex-col items-center">
-            <div className="relative h-[84px] w-[84px]">
-              <svg viewBox="0 0 36 36" className="h-full w-full -rotate-90">
-                <circle
-                  cx="18"
-                  cy="18"
-                  r="15"
-                  fill="none"
-                  stroke="#e7e5e4"
-                  strokeWidth="3"
-                />
-                <circle
-                  cx="18"
-                  cy="18"
-                  r="15"
-                  fill="none"
-                  stroke="#5B9A82"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  strokeDasharray={`${0.95 * 94.2} 94.2`}
-                />
-              </svg>
-              <span className="absolute inset-0 flex items-center justify-center text-[15px] font-semibold text-stone-700">
-                95%
-              </span>
-            </div>
-            <span className="mt-1 text-[10px] text-stone-500">
-              Feeling great
+    <Card
+      title="Design notes"
+      notebook
+      className="min-h-[200px] lg:min-h-0"
+      {...bind}
+    >
+      <div className="absolute inset-0">
+        {NOTES.map((n, i) => {
+          const left = !dropped ? n.x : on ? n.tx : n.x;
+          const top = !dropped ? -30 : on ? n.ty : n.y;
+          const rot = !dropped ? n.r * 2 : on ? 0 : n.r;
+          return (
+            <span
+              key={n.t}
+              className="absolute whitespace-nowrap rounded-full px-3 py-1 text-[10px] font-medium text-white transition-all duration-[900ms] ease-[cubic-bezier(0.34,1.45,0.64,1)]"
+              style={{
+                background: n.c,
+                left: `${left}%`,
+                top: `${top}%`,
+                opacity: dropped ? 1 : 0,
+                transform: `translate(-50%,-50%) rotate(${rot}deg)`,
+                transitionDelay: `${on ? i * 40 : i * 90}ms`,
+              }}
+            >
+              {n.t}
             </span>
-          </div>
-        </Card>
+          );
+        })}
+      </div>
+    </Card>
+  );
+}
 
-        <Card title="Fuel mix" className="col-span-1 lg:col-span-2">
-          <Radar />
-        </Card>
+/* 2. Energy level: hover = 0% -> 95% */
+function EnergyCard() {
+  const [t, play] = useTween(1500);
+  const val = 95 * easeOut(t);
+  const C = 94.2;
 
-        <Card title="My journey" className="col-span-2 lg:col-span-2">
-          <ul className="space-y-1">
-            {JOURNEY.map((j) => (
-              <li
-                key={j.n}
-                className="flex items-center gap-2 rounded px-1.5 py-1 text-[11px] text-stone-600"
-              >
-                <span className="font-mono text-[9px] text-stone-400">
-                  {j.n}
-                </span>
-                <span className="flex-1">{j.t}</span>
-                <span className="rounded bg-stone-100 px-1.5 font-mono text-[8px] text-stone-400">
-                  {j.tag}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </Card>
+  return (
+    <Card
+      title="Energy level"
+      className="min-h-[220px] lg:min-h-0"
+      onMouseEnter={play}
+    >
+      <div className="flex h-full flex-col items-center justify-center gap-2">
+        <div className="relative h-[112px] w-[112px]">
+          <svg viewBox="0 0 36 36" className="h-full w-full -rotate-90">
+            <circle
+              cx="18"
+              cy="18"
+              r="15"
+              fill="none"
+              stroke="#e7e5e4"
+              strokeWidth="3"
+            />
+            <circle
+              cx="18"
+              cy="18"
+              r="15"
+              fill="none"
+              stroke="#5B9A82"
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeDasharray={`${(val / 100) * C} ${C}`}
+            />
+          </svg>
+          <span className="absolute inset-0 flex items-center justify-center text-[22px] font-semibold tabular-nums text-stone-700">
+            {Math.round(val)}%
+          </span>
+        </div>
+        <span className="text-[11px] text-stone-500">Feeling great</span>
+      </div>
+    </Card>
+  );
+}
 
-        <Card title="Fun facts" className="col-span-2 lg:col-span-2">
-          <button
-            onClick={() => setFact((f) => (f + 1) % 3)}
-            className="relative mx-auto block h-[150px] w-[120px] cursor-pointer"
-            aria-label="Ganti foto"
-          >
-            {[2, 1, 0].map((layer) => {
-              const idx = (fact + layer) % 3;
-              return (
-                <div
-                  key={idx}
-                  className="absolute inset-0 rounded-sm bg-white p-1.5 pb-5 shadow-md transition-transform duration-300"
-                  style={{
-                    transform: `rotate(${layer === 0 ? 0 : layer === 1 ? -5 : 5}deg) translateY(${layer * -2}px)`,
-                    zIndex: 3 - layer,
-                  }}
+/* 3. Fuel mix: hover = radar terisi pelan-pelan, label muncul satu-satu */
+function FuelCard() {
+  const [t, play] = useTween(1600);
+  const n = FUEL.length;
+  const cx = 50,
+    cy = 52,
+    r = 28;
+
+  const pt = (i: number, k: number) => {
+    const a = (-90 + (360 / n) * i) * (Math.PI / 180);
+    return [cx + Math.cos(a) * r * k, cy + Math.sin(a) * r * k];
+  };
+
+  const prog = FUEL.map((_, i) => stag(t, i, n));
+  const poly = FUEL.map((f, i) => pt(i, f.v * prog[i]).join(",")).join(" ");
+  const ring = (k: number) => FUEL.map((_, i) => pt(i, k).join(",")).join(" ");
+
+  return (
+    <Card title="Fuel mix" className="min-h-0 lg:min-h-0" onMouseEnter={play}>
+      <div className="flex h-full items-center justify-center">
+        <svg
+          viewBox="0 0 100 100"
+          className="aspect-square h-[210px] w-auto max-w-full lg:h-full"
+        >
+          {[1 / 3, 2 / 3, 1].map((k) => (
+            <polygon
+              key={k}
+              points={ring(k)}
+              fill="none"
+              stroke="#d6d3d1"
+              strokeWidth="0.5"
+            />
+          ))}
+          {FUEL.map((_, i) => {
+            const [x, y] = pt(i, 1);
+            return (
+              <line
+                key={i}
+                x1={cx}
+                y1={cy}
+                x2={x}
+                y2={y}
+                stroke="#e7e5e4"
+                strokeWidth="0.4"
+              />
+            );
+          })}
+          <polygon
+            points={poly}
+            fill="rgba(110,160,190,0.3)"
+            stroke="#6EA0BE"
+            strokeWidth="0.8"
+            strokeLinejoin="round"
+          />
+          {FUEL.map((f, i) => {
+            const [dx, dy] = pt(i, f.v * prog[i]);
+            const [lx, ly] = pt(i, 1.3);
+            return (
+              <g key={f.l}>
+                <circle
+                  cx={dx}
+                  cy={dy}
+                  r="1.3"
+                  fill="#6EA0BE"
+                  opacity={prog[i]}
+                />
+                <text
+                  x={lx}
+                  y={ly}
+                  fontSize="5.5"
+                  fill="#78716c"
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  opacity={prog[i]}
                 >
-                  <Placeholder
-                    ratio="1 / 1"
-                    label={`Foto ${idx + 1}`}
-                    className="h-full"
-                  />
-                </div>
-              );
-            })}
-          </button>
-        </Card>
+                  {f.l}
+                </text>
+              </g>
+            );
+          })}
+        </svg>
+      </div>
+    </Card>
+  );
+}
+
+/* 4. My journey: hover = list muncul satu per satu */
+function JourneyCard() {
+  const [t, play] = useTween(1500);
+  const n = JOURNEY.length;
+
+  return (
+    <Card
+      title="My journey"
+      className="min-h-[320px] lg:min-h-0"
+      onMouseEnter={play}
+    >
+      <ul className="flex h-full flex-col justify-between gap-1">
+        {JOURNEY.map((j, i) => {
+          const p = stag(t, i, n, 0.35);
+          const now = "now" in j && j.now;
+          return (
+            <li
+              key={j.n}
+              style={{
+                opacity: p,
+                transform: `translateX(${(1 - p) * -14}px)`,
+              }}
+              className={
+                now
+                  ? "mt-1 flex items-center gap-3 rounded-lg border border-stone-300/70 bg-stone-100/70 px-3 py-3"
+                  : "flex items-center gap-3 border-b border-stone-200 px-1 py-2 last:border-0"
+              }
+            >
+              <span className="font-mono text-[10px] text-stone-400">
+                {j.n}
+              </span>
+              <span
+                className={`h-2 w-2 shrink-0 rounded-full ${
+                  now ? "bg-emerald-500" : "bg-stone-300"
+                }`}
+              />
+              <span
+                className={`flex-1 ${
+                  now
+                    ? "text-[14px] font-semibold text-stone-800"
+                    : "text-[12px] text-stone-500"
+                }`}
+              >
+                {j.t}
+              </span>
+              <span
+                className={`rounded-full px-2 py-0.5 font-mono text-[8px] ${
+                  now
+                    ? "bg-emerald-100 text-emerald-600"
+                    : "bg-stone-100 text-stone-400"
+                }`}
+              >
+                {j.tag}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+    </Card>
+  );
+}
+
+/* 5. Fun facts: 3 foto bertumpuk, hover = menyebar kiri & kanan */
+function FunFactsCard() {
+  const { on, bind } = useHover();
+
+  // [offset X (% lebar foto), rotasi saat menyebar, rotasi saat bertumpuk]
+  const layers = [
+    { x: 0, spread: 0, rest: -2 }, // tengah (paling depan)
+    { x: -92, spread: -10, rest: -7 }, // kiri
+    { x: 92, spread: 10, rest: 6 }, // kanan
+  ];
+
+  return (
+    <Card
+      title="Fun facts"
+      className="min-h-[280px] lg:col-span-2 lg:min-h-0"
+      {...bind}
+    >
+      <div className="absolute inset-0 flex items-center justify-center">
+        {[1, 2, 0].map((i) => {
+          const l = layers[i];
+          const tx = on ? l.x : 0;
+          const rot = on ? l.spread : l.rest;
+          return (
+            <div
+              key={i}
+              className="absolute left-1/2 top-1/2 w-[130px] bg-white p-2 pb-7 shadow-lg ring-1 ring-black/5 transition-transform duration-500 ease-[cubic-bezier(0.34,1.3,0.64,1)] sm:w-[150px] lg:w-[190px]"
+              style={{
+                zIndex: i === 0 ? 3 : 2,
+                transform: `translate(-50%,-50%) translateX(${tx}%) rotate(${rot}deg)`,
+              }}
+            >
+              <Shot
+                src={FACT_PHOTOS[i]}
+                ratio="1 / 1"
+                alt={`Fun fact ${i + 1}`}
+              />
+            </div>
+          );
+        })}
+      </div>
+    </Card>
+  );
+}
+
+function SnapshotTab() {
+  return (
+    <div className="h-full overflow-y-auto p-3 lg:overflow-hidden lg:p-4">
+      <div className="grid grid-cols-1 gap-3 lg:h-full lg:grid-cols-3 lg:grid-rows-[minmax(0,1fr)_minmax(0,1.6fr)]">
+        <DesignNotesCard />
+        <EnergyCard />
+        <FuelCard />
+        <JourneyCard />
+        <FunFactsCard />
       </div>
     </div>
   );
@@ -685,9 +950,9 @@ export default function FinderWindow({
           {/* tekstur kertas */}
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 z-[1] rounded-2xl mix-blend-multiply"
+            className="pointer-events-none absolute inset-0 z-[3] rounded-2xl mix-blend-multiply"
             style={{
-              backgroundImage: "url(/asset/noise-texture.webp)",
+              backgroundImage: "url(/noise-texture.webp)",
               backgroundSize: "200px 200px",
               opacity: 0.3,
             }}

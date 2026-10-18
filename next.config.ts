@@ -12,6 +12,14 @@ const nextConfig: NextConfig = {
       },
     },
   },
+   images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "picsum.photos",
+      },
+    ],
+  },
   allowedDevOrigins: ["*.trycloudflare.com", "*.ngrok-free.app"],
 };
 

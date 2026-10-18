@@ -8,6 +8,7 @@ import HangingPadlock from "@/components/Key";
 import TerminalCard from "@/components/TerminalCard";
 import StickyNote from "@/components/StickyNote";
 import FinderWindow from "@/components/FinderWindow";
+import ScrollTiltReveal from "@/libs/ScrollTiltRavael";
 
 export default function Home() {
   return (
@@ -192,7 +193,9 @@ export default function Home() {
       </section>
 
       <section className="relative z-0 px-6 pb-24 pt-32 md:pt-40">
-        <FinderWindow user="lemoll" />
+        <ScrollTiltReveal startRotate={8} startY={160} startScale={0.94}>
+          <FinderWindow user="lemoll" />
+        </ScrollTiltReveal>
       </section>
     </>
   );
