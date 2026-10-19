@@ -15,7 +15,8 @@ export default function Home() {
     <>
       <div
         aria-hidden
-        className="fixed inset-0 -z-10 bg-[url('/bg-home.webp')] bg-cover bg-center bg-no-repeat"
+        className="fixed left-0 top-0 -z-10 h-[100lvh] w-full
+             bg-[url('/bg-home.webp')] bg-cover bg-center bg-no-repeat"
       />
 
       {/*
@@ -192,7 +193,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="relative z-0 px-6 pb-24 pt-32 md:pt-40">
+      <section className="relative z-0 overflow-x-clip px-6 pb-24 pt-32 md:pt-40">
         <ScrollTiltReveal startRotate={8} startY={160} startScale={0.94}>
           <FinderWindow user="lemoll" />
         </ScrollTiltReveal>

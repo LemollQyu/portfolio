@@ -8,14 +8,16 @@ import { useState, useEffect, useRef, useCallback } from "react";
 type Folder = {
   id: string;
   title: string;
+  kind?: "folder" | "file"; // default "folder"
   back: string;
   front: string;
-  shots: number;
-  cover?: string; // gambar utama (16:9)
-  images?: string[]; // gambar kecil di bawahnya (maks 3 tampil)
-  desc: string[];
+  shots?: number;
+  cover?: string;
+  images?: string[];
+  desc?: string[];
   button?: string;
-  href?: string; // tujuan tombol
+  href?: string;
+  children?: Folder[]; // kalau ada, klik = masuk ke dalam folder
 };
 
 const FOLDERS: Folder[] = [
@@ -24,27 +26,85 @@ const FOLDERS: Folder[] = [
     title: "Projects at Work",
     back: "#7EA4BE",
     front: "#8EB4CE",
-    shots: 3,
-    cover: "/showcase/1.png",
-    images: [
-      "https://picsum.photos/seed/work1/1200/675",
-      "https://picsum.photos/seed/work2/1200/675",
-      "https://picsum.photos/seed/work3/1200/675",
+    children: [
+      {
+        id: "work1",
+        title: "Marketplace Belabeli",
+        back: "#6FA583",
+        front: "#7FB593",
+        shots: 3,
+        cover: "/showcase/1.png",
+        images: ["/showcase/2.webp", "/showcase/3.webp", "/showcase/4.webp"],
+        desc: [
+          "Belabeli is a mobile marketplace platform that brings buyers, sellers, and admins together in one well-organized shopping ecosystem. Buyers can browse products, choose variations, check out, and chat directly with sellers. Sellers manage their products, orders, and sales reports with ease, while admins oversee all activity through a centralized dashboard.",
+          "Beyond the core features, Belabeli includes a transparent refund flow with status tracking, a Loyalty & Rewards Center where points can be redeemed for vouchers and gifts, and an AR feature that lets users view products in their real space. Everything is wrapped in a clean, consistent green design and integrated with social media.",
+        ],
+        button: "",
+        href: "",
+      },
+      {
+        id: "work2",
+        title: "Management Printing",
+        back: "#8A9199",
+        front: "#9BA2AA",
+        shots: 2,
+        cover: "/showcase/p1.webp",
+        images: ["/showcase/p2.webp"],
+        desc: [
+          "Management Printing is an admin dashboard built to run a printing business from one place. Admins can manage service categories and their specifications, track incoming orders by status, verify payments, and handle refunds, all through a clean, minimal interface that works across tablet, laptop, and mobile.",
+          "Beyond the core workflow, it includes a real-time notification center for new orders and payments, order detail views with customer notes and downloadable files, revenue and order statistics with charts, payment method management, and exportable reports. Together they give the team a clear view of every job from order to print.",
+        ],
+      },
+      {
+        id: "work3",
+        title: "Company Profile",
+        back: "#7EA4BE",
+        front: "#8EB4CE",
+        shots: 3,
+        cover: "https://picsum.photos/seed/work3/1200/675",
+        desc: ["Deskripsi proyek work3."],
+      },
     ],
-    desc: [
-      "Paragraf pertama: ceritakan proyeknya, masalahnya, dan peranmu.",
-      "Paragraf kedua: teknologi yang dipakai dan hasilnya.",
-    ],
-    button: "Lihat detail",
-    href: "https://contoh.com/proyek",
   },
   {
-    id: "ai",
-    title: "Designing with AI",
+    id: "myfiles",
+    title: "My Files",
     back: "#CEAB7E",
     front: "#DEBB8E",
-    shots: 2,
-    desc: ["Eksperimen dan proyek yang melibatkan AI."],
+    children: [
+      {
+        id: "file1",
+        title: "file1",
+        kind: "file",
+        back: "#CEAB7E",
+        front: "#DEBB8E",
+        shots: 2,
+        cover: "https://picsum.photos/seed/file1/1200/675",
+        desc: ["Isi dari file1."],
+        button: "Buka file",
+        href: "#",
+      },
+      {
+        id: "file2",
+        title: "file2",
+        kind: "file",
+        back: "#CEAB7E",
+        front: "#DEBB8E",
+        shots: 1,
+        cover: "https://picsum.photos/seed/file2/1200/675",
+        desc: ["Isi dari file2."],
+      },
+      {
+        id: "file3",
+        title: "file3",
+        kind: "file",
+        back: "#CEAB7E",
+        front: "#DEBB8E",
+        shots: 1,
+        cover: "https://picsum.photos/seed/file3/1200/675",
+        desc: ["Isi dari file3."],
+      },
+    ],
   },
   {
     id: "community",
@@ -215,7 +275,7 @@ function Placeholder({
         backgroundColor: "rgba(255,255,255,0.55)",
       }}
     >
-      {label ?? "Gambar"}
+      {label ?? "Picture"}
     </div>
   );
 }
@@ -264,7 +324,40 @@ function TabIcon({ id }: { id: TabId }) {
 
 /* ========================= TAB: PROJECTS ========================= */
 
-function FolderButton({
+function FileIcon({ color }: { color: string }) {
+  return (
+    <svg
+      viewBox="0 0 80 96"
+      className="absolute inset-0 h-full w-full"
+      aria-hidden
+    >
+      {/* badan kertas */}
+      <path
+        d="M8 4 H50 L72 26 V88 a4 4 0 0 1 -4 4 H12 a4 4 0 0 1 -4 -4 Z"
+        fill="#FFFFFF"
+        stroke="#D6D3D1"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      {/* lipatan pojok */}
+      <path
+        d="M50 4 V22 a4 4 0 0 0 4 4 H72 Z"
+        fill="#E7E5E4"
+        stroke="#D6D3D1"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      {/* garis teks */}
+      <rect x="18" y="40" width="44" height="3" rx="1.5" fill="#E7E5E4" />
+      <rect x="18" y="49" width="44" height="3" rx="1.5" fill="#E7E5E4" />
+      <rect x="18" y="58" width="30" height="3" rx="1.5" fill="#E7E5E4" />
+      {/* label warna di bawah */}
+      <rect x="18" y="72" width="26" height="8" rx="2" fill={color} />
+    </svg>
+  );
+}
+
+function ItemButton({
   f,
   active,
   onClick,
@@ -273,51 +366,62 @@ function FolderButton({
   active: boolean;
   onClick: () => void;
 }) {
+  const isFile = f.kind === "file";
+
   return (
     <button
       onClick={onClick}
       className="group flex w-full cursor-pointer flex-col items-center gap-2"
     >
-      <div
-        className="relative aspect-[96/80] w-full max-w-[96px]"
-        style={{
-          perspective: 200,
-          filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.1))",
-        }}
-      >
-        <svg
-          viewBox="0 0 96 80"
-          className="absolute inset-0 h-full w-full"
-          aria-hidden
+      {isFile ? (
+        <div
+          className={`relative aspect-[80/96] w-full max-w-[76px] transition-transform duration-200 group-hover:-translate-y-1 ${
+            active ? "-translate-y-1" : ""
+          }`}
+          style={{ filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.12))" }}
         >
-          <rect x="0" y="12" width="96" height="68" rx="8" fill={f.back} />
-          <path
-            d="M0 20 C0 14.5, 4.5 10, 10 10 L32 10 Q36 10, 38 6 Q40 2, 44 2 L86 2 Q94 2, 96 10 L96 20 L0 20 Z"
-            fill={f.back}
-          />
-        </svg>
-
-        {/* kertas di dalam folder */}
+          <FileIcon color={f.front} />
+        </div>
+      ) : (
         <div
-          className={`absolute inset-x-[6%] bottom-[7%] h-[62%] rounded-[4px] bg-white/60 transition-opacity duration-200 ${
-            active ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-          }`}
-        />
-
-        {/* panel depan: terbuka miring saat hover / aktif */}
-        <div
-          className={`absolute inset-x-[1%] bottom-[1%] h-[78%] rounded-[7px] transition-transform duration-300 ease-out [transform-origin:center_bottom] ${
-            active
-              ? "[transform:rotateX(-24deg)]"
-              : "group-hover:[transform:rotateX(-24deg)]"
-          }`}
+          className="relative aspect-[96/80] w-full max-w-[96px]"
           style={{
-            backgroundColor: f.front,
-            boxShadow:
-              "inset 0 1px 0 rgba(255,255,255,0.3), 0 1px 2px rgba(0,0,0,0.06)",
+            perspective: 200,
+            filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.1))",
           }}
-        />
-      </div>
+        >
+          <svg
+            viewBox="0 0 96 80"
+            className="absolute inset-0 h-full w-full"
+            aria-hidden
+          >
+            <rect x="0" y="12" width="96" height="68" rx="8" fill={f.back} />
+            <path
+              d="M0 20 C0 14.5, 4.5 10, 10 10 L32 10 Q36 10, 38 6 Q40 2, 44 2 L86 2 Q94 2, 96 10 L96 20 L0 20 Z"
+              fill={f.back}
+            />
+          </svg>
+
+          <div
+            className={`absolute inset-x-[6%] bottom-[7%] h-[62%] rounded-[4px] bg-white/60 transition-opacity duration-200 ${
+              active ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+            }`}
+          />
+
+          <div
+            className={`absolute inset-x-[1%] bottom-[1%] h-[78%] rounded-[7px] transition-transform duration-300 ease-out [transform-origin:center_bottom] ${
+              active
+                ? "[transform:rotateX(-24deg)]"
+                : "group-hover:[transform:rotateX(-24deg)]"
+            }`}
+            style={{
+              backgroundColor: f.front,
+              boxShadow:
+                "inset 0 1px 0 rgba(255,255,255,0.3), 0 1px 2px rgba(0,0,0,0.06)",
+            }}
+          />
+        </div>
+      )}
       <span
         className={`min-h-[28px] text-center text-[11px] leading-tight transition-colors duration-200 ${
           active
@@ -332,28 +436,78 @@ function FolderButton({
 }
 
 function ProjectsTab() {
+  // folder yang sedang dimasuki (null = tampilan root)
+  const [dirId, setDirId] = useState<string | null>(null);
+  // item yang detailnya sedang dibuka di panel kanan
   const [openId, setOpenId] = useState<string | null>(null);
-  const current = FOLDERS.find((f) => f.id === openId) ?? null;
+
+  const dir = FOLDERS.find((f) => f.id === dirId) ?? null;
+  const items: Folder[] = dir?.children ?? FOLDERS;
+  const current = items.find((f) => f.id === openId) ?? null;
+
+  const handleClick = (f: Folder) => {
+    if (f.children) {
+      // masuk ke dalam folder
+      setDirId(f.id);
+      setOpenId(null);
+    } else {
+      // buka detail di sebelahnya
+      setOpenId(f.id === openId ? null : f.id);
+    }
+  };
+
+  const goBack = () => {
+    setDirId(null);
+    setOpenId(null);
+  };
 
   return (
     <div className="relative h-full overflow-hidden">
-      {/* Grid folder */}
+      {/* Grid isi folder */}
       <div
-        className={`h-full w-full overflow-y-auto px-4 pb-6 pt-6 lg:px-8 lg:pt-8 lg:transition-[width] lg:duration-[350ms] lg:ease-out ${
+        className={`h-full w-full overflow-y-auto px-4 pb-6 pt-4 lg:px-8 lg:pt-3 lg:transition-[width] lg:duration-[350ms] lg:ease-out ${
           current ? "lg:w-[42%]" : "lg:w-full"
         }`}
       >
+        {/* Breadcrumb + tombol kembali */}
+        <div className="mb-4 flex items-center gap-2 text-[11px] text-stone-500">
+          {dir && (
+            <button
+              onClick={goBack}
+              aria-label="Kembali"
+              className="flex h-6 w-6 cursor-pointer items-center justify-center rounded-md border border-stone-300/60 bg-white/70 text-stone-600 transition-colors hover:bg-white"
+            >
+              ‹
+            </button>
+          )}
+          <span
+            className={
+              dir ? "cursor-pointer hover:text-stone-800" : "text-stone-700"
+            }
+            onClick={dir ? goBack : undefined}
+          >
+            Projects
+          </span>
+          {dir && (
+            <>
+              <span className="text-stone-300">/</span>
+              <span className="font-medium text-stone-800">{dir.title}</span>
+            </>
+          )}
+        </div>
+
         <div
-          className={`grid grid-cols-3 content-start gap-x-3 gap-y-5 lg:gap-x-8 lg:gap-y-6 ${
+          key={dirId ?? "root"}
+          className={`animate-[fadeIn_250ms_ease-out] grid grid-cols-3 content-start gap-x-3 gap-y-5 lg:gap-x-8 lg:gap-y-6 ${
             current ? "lg:grid-cols-3 lg:gap-x-4" : "lg:grid-cols-5"
           }`}
         >
-          {FOLDERS.map((f) => (
-            <FolderButton
+          {items.map((f) => (
+            <ItemButton
               key={f.id}
               f={f}
               active={f.id === openId}
-              onClick={() => setOpenId(f.id === openId ? null : f.id)}
+              onClick={() => handleClick(f)}
             />
           ))}
         </div>
@@ -377,9 +531,9 @@ function ProjectsTab() {
 
             <Shot src={current.cover} ratio="16 / 9" alt={current.title} />
 
-            {current.shots > 1 && (
+            {(current.shots ?? 0) > 1 && (
               <div className="mt-2 grid grid-cols-3 gap-2">
-                {Array.from({ length: Math.min(current.shots, 3) }).map(
+                {Array.from({ length: Math.min(current.shots ?? 0, 3) }).map(
                   (_, i) => (
                     <Shot
                       key={i}
@@ -396,7 +550,7 @@ function ProjectsTab() {
               {current.title}
             </h3>
             <div className="mt-2 space-y-2 text-[12px] leading-relaxed text-stone-600">
-              {current.desc.map((p, i) => (
+              {(current.desc ?? []).map((p, i) => (
                 <p key={i}>{p}</p>
               ))}
             </div>

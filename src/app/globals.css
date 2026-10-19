@@ -124,3 +124,14 @@ body::-webkit-scrollbar {
     cursor: none !important;
   }
 }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+html,
+body {
+  background-color: #7ea4be; /* ganti dengan warna dominan bg-home.webp */
+  overscroll-behavior-y: none;
+}

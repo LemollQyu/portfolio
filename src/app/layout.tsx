@@ -20,6 +20,11 @@ const feat = localFont({
   variable: "--font-feat-src",
 });
 
+export const viewport = {
+  viewportFit: "cover",
+  themeColor: "#7ea4be",
+};
+
 export default function RootLayout({
   children,
 }: {
