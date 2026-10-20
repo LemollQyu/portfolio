@@ -130,8 +130,16 @@ body::-webkit-scrollbar {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-html,
 body {
-  background-color: #7ea4be; /* ganti dengan warna dominan bg-home.webp */
+  /* hapus: background: var(--background); */
+  color: var(--foreground);
+
+}
+
+html {
+  background: #7ea4be url('/bg-home.webp') center / cover no-repeat fixed;
+}
+
+body {
   overscroll-behavior-y: none;
 }

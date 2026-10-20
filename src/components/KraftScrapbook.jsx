@@ -79,12 +79,14 @@ export default function KraftScrapbook() {
          <p className="font-suo tracking-wider text-xl sm:text-2xl ks-headline">capture moments</p>
         </div>
       </div>
-       <PencilCard
+      <PencilCard
         href=""
         fluid
         text="capture moments"
-        className="relative -mt-4 ml-[8%] w-[84%]"
+        className="relative z-40 -mt-4 ml-[8%] w-[84%]"
       />
+
+ 
     </div>
   );
 }

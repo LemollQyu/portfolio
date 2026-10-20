@@ -58,11 +58,35 @@ const FOLDERS: Folder[] = [
       {
         id: "work3",
         title: "Company Profile",
-        back: "#7EA4BE",
-        front: "#8EB4CE",
-        shots: 3,
-        cover: "https://picsum.photos/seed/work3/1200/675",
-        desc: ["Deskripsi proyek work3."],
+        back: "#2F4A38",
+        front: "#3E5C48",
+        shots: 0,
+        cover: "/showcase/c3.webp",
+        desc: [
+          "LemIIQ is a company profile website for a collaborative space where ideas, creativity, and community come together to create real impact. Visitors are welcomed by a bold hero section, then can explore the portfolio with category filters, read detailed case studies, meet the team, and get to know the community behind the work.",
+          "Each case study highlights the team's role and measurable impact, while the community page shows active members, collaborations, and upcoming events. It also features a video showcase, a newsletter subscription, and a fully responsive mobile experience with a dedicated menu. Everything is wrapped in a calm forest-green and cream palette paired with elegant serif typography.",
+        ],
+      },
+      {
+        id: "work4",
+        title: "Open Course",
+        back: "#5E8B6C",
+        front: "#6E9B7C",
+        shots: 0,
+        cover: "/showcase/a1.webp",
+        desc: [
+          "FE Open Course is an online learning platform built to help people grow their skills in Front End Engineering. Learners can sign in to a personal dashboard that shows their enrolled courses, completed lessons, certificates, and average ratings, then browse the full course catalog with category filters and search.",
+          "Each course page covers what you will learn, course details, and the instructor's profile, while the lesson view combines a video player with a module list that tracks progress and unlocks the next material. It also includes a course management page with announcements and a profile page for account settings. Everything is wrapped in a calm, consistent green design that keeps learning focused and easy on the eyes.",
+        ],
+      },
+      {
+        id: "work5",
+        title: "Travel Chatour",
+        back: "#5E8B6C",
+        front: "#6E9B7C",
+        shots: 2,
+        cover: "/showcase/a1.webp",
+        desc: ["cek"],
       },
     ],
   },
@@ -74,35 +98,44 @@ const FOLDERS: Folder[] = [
     children: [
       {
         id: "file1",
-        title: "file1",
+        title: "Curriculum Vitae",
         kind: "file",
         back: "#CEAB7E",
         front: "#DEBB8E",
-        shots: 2,
-        cover: "https://picsum.photos/seed/file1/1200/675",
-        desc: ["Isi dari file1."],
+        shots: 0,
+        cover: "/file/cv.webp",
+        desc: [
+          "My curriculum vitae, summarizing my background, education, work experience, skills, and the projects I have worked on. It gives a quick overview of who I am and what I can bring to a team.",
+        ],
         button: "Buka file",
-        href: "#",
+        href: "http://localhost:3000/file/mycv.pdf",
       },
       {
         id: "file2",
-        title: "file2",
+        title: "Academic Transcript",
         kind: "file",
         back: "#CEAB7E",
         front: "#DEBB8E",
-        shots: 1,
-        cover: "https://picsum.photos/seed/file2/1200/675",
-        desc: ["Isi dari file2."],
+        shots: 0,
+
+        desc: [
+          "My official academic transcript, listing the courses I have taken, the grades I earned, and my cumulative GPA. It shows my academic progress and the subjects I have studied throughout my degree.",
+        ],
+        button: "Buka file",
+        href: "http://localhost:3000/file/transkip.pdf",
       },
       {
         id: "file3",
-        title: "file3",
+        title: "Resume",
         kind: "file",
         back: "#CEAB7E",
         front: "#DEBB8E",
-        shots: 1,
-        cover: "https://picsum.photos/seed/file3/1200/675",
-        desc: ["Isi dari file3."],
+        shots: 0,
+        desc: [
+          "A concise one-page version of my resume, highlighting my key skills, experience, and selected projects. It is made for a quick read when you want the essentials at a glance.",
+        ],
+        button: "Buka file",
+        href: "http://localhost:3000/file/resume.pdf",
       },
     ],
   },
@@ -232,12 +265,27 @@ function Shot({
   src,
   ratio,
   alt,
+  natural = false,
 }: {
   src?: string;
   ratio: string;
   alt: string;
+  natural?: boolean;
 }) {
   if (!src) return <Placeholder ratio={ratio} />;
+
+  // mode natural: ikut rasio asli gambar, tidak ada yang terpotong
+  if (natural) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={src}
+        alt={alt}
+        className="h-auto w-full rounded-md border border-stone-300/50"
+      />
+    );
+  }
+
   return (
     <div
       className="relative w-full overflow-hidden rounded-md border border-stone-300/50"
@@ -529,10 +577,25 @@ function ProjectsTab() {
               ✕
             </button>
 
-            <Shot src={current.cover} ratio="16 / 9" alt={current.title} />
+            {current.cover && (
+              <Shot
+                src={current.cover}
+                ratio="16 / 9"
+                alt={current.title}
+                natural
+              />
+            )}
 
-            {(current.shots ?? 0) > 1 && (
-              <div className="mt-2 grid grid-cols-3 gap-2">
+            {(current.shots ?? 0) > 0 && (
+              <div
+                className={`grid gap-2 ${current.cover ? "mt-2" : ""} ${
+                  (current.shots ?? 0) === 1
+                    ? "grid-cols-1"
+                    : (current.shots ?? 0) === 2
+                      ? "grid-cols-2"
+                      : "grid-cols-3"
+                }`}
+              >
                 {Array.from({ length: Math.min(current.shots ?? 0, 3) }).map(
                   (_, i) => (
                     <Shot
@@ -546,7 +609,11 @@ function ProjectsTab() {
               </div>
             )}
 
-            <h3 className="mt-4 text-[13px] font-medium text-stone-800">
+            <h3
+              className={`text-[13px] font-medium text-stone-800 ${
+                current.cover || (current.shots ?? 0) > 0 ? "mt-4" : "mt-8"
+              }`}
+            >
               {current.title}
             </h3>
             <div className="mt-2 space-y-2 text-[12px] leading-relaxed text-stone-600">

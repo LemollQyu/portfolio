@@ -19,14 +19,6 @@ export default function Home() {
              bg-[url('/bg-home.webp')] bg-cover bg-center bg-no-repeat"
       />
 
-      {/*
-        MOBILE (< md), urutan dari atas:
-          1. Badge (menggantung)
-          2. Baris: Music box (kiri) + Folder (kanan)
-          3. DeskPaper
-          4. Scrapbook
-        DESKTOP (>= md): layout absolute seperti sebelumnya.
-      */}
       <main
         className="relative min-h-screen overflow-x-hidden
                    flex flex-col items-center gap-10 px-4 pb-20 pt-[330px]
@@ -164,7 +156,7 @@ export default function Home() {
         </div>
 
         {/* Scrapbook */}
-        <div className="relative z-0 w-full max-w-[560px] md:max-w-none md:w-auto">
+        <div className="relative z-0 w-full max-w-[560px] md:z-auto md:max-w-none md:w-auto">
           <KraftScrapbook />
         </div>
         <div className="absolute md:right-60 right-28  z-20 rotate-12 w-[clamp(140px,15vw,230px)] md:block lg:right-[300px] top-60">
