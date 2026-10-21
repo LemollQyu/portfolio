@@ -7,28 +7,7 @@
   transform: rotate(-1deg);
   cursor: pointer;
 }
-/* @media (min-width: 768px) {
-  .ks-desk-card {
-    --bar-gutter: 56px;
-    position: absolute;
-    top: 16px;
-    left: var(--bar-gutter);
-    margin-inline: 0;
-    width: clamp(260px, 26vw, 320px);
-  }
-} */
 
-/* @media (min-width: 768px) {
-  .ks-desk-card {
-    --bar-gutter: 56px;
-    position: absolute;
-    top: auto;
-    top: 380px;
-    left: var(--bar-gutter);
-    margin-inline: 0;
-    width: clamp(260px, 26vw, 320px);
-  }
-} */
 
 /* sm: 640px - 767px -> naik ke atas */
 @media (min-width: 640px) {

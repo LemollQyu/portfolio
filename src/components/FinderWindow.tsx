@@ -167,49 +167,102 @@ const FOLDERS: Folder[] = [
 ];
 
 const STATS = [
-  { value: "20+", label: "Proyek selesai" },
-  { value: "5+", label: "Tahun belajar" },
-  { value: "10+", label: "Teknologi" },
+  { value: "3.80", label: "IPK / 4.00" },
+  { value: "2", label: "Penghargaan" },
+  { value: "6", label: "Sertifikasi" },
+  { value: "6", label: "Proyek" },
 ];
+type Achievement = {
+  year: string;
+  title: string;
+  sub: string;
+  badge: "AWARD" | "WORK" | "EDU" | "SHIPPED" | "CERT";
+  href?: string; // link ke PDF/gambar sertifikat, opsional
+};
 
-const ACHIEVEMENTS = [
+const ACHIEVEMENTS: Achievement[] = [
   {
     year: "2026",
-    title: "Judul pencapaian",
-    sub: "Keterangan singkat",
-    badge: "AWARD",
+    title: "Fullstack Developer Intern, Azura Labs",
+    sub: "Merancang database, membangun API Contact, dan implementasi UI",
+    badge: "WORK",
   },
   {
-    year: "2025",
-    title: "Judul pencapaian",
-    sub: "Keterangan singkat",
-    badge: "SHIPPED",
+    year: "2026",
+    title: "Lulus Teknik Informatika, IPK 3,80/4,00",
+    sub: "Universitas Wahid Hasyim Semarang",
+    badge: "EDU",
   },
   {
-    year: "2025",
-    title: "Judul pencapaian",
-    sub: "Keterangan singkat",
+    year: "2024",
+    title: "Penghargaan MSIB Batch 7",
+    sub: "Kampus Merdeka, PT Campus Digital Indonesia",
     badge: "AWARD",
   },
   {
     year: "2024",
-    title: "Judul pencapaian",
-    sub: "Keterangan singkat",
-    badge: "SHIPPED",
-  },
-  {
-    year: "2024",
-    title: "Judul pencapaian",
-    sub: "Keterangan singkat",
+    title: "Penghargaan Gemastik Programming",
+    sub: "Kompetisi programming mahasiswa nasional",
     badge: "AWARD",
   },
   {
-    year: "2023",
-    title: "Judul pencapaian",
-    sub: "Keterangan singkat",
+    year: "2024",
+    title: "Software Developer, MSIB 7",
+    sub: "BelaBeli PWA marketplace UMKM: Next.js dan Laravel 11",
     badge: "SHIPPED",
   },
 ];
+
+const CERTIFICATES: Achievement[] = [
+  {
+    year: "2026",
+    title: "Huawei Academic: Artificial Intelligence",
+    sub: "Huawei",
+    badge: "CERT",
+  },
+  {
+    year: "2026",
+    title: "Oracle Academic: Database",
+    sub: "Oracle",
+    badge: "CERT",
+  },
+  {
+    year: "2024",
+    title: "Campus Digital: Software Developer",
+    sub: "Campus Digital",
+    badge: "CERT",
+  },
+  {
+    year: "2022",
+    title: "Sololearn: Web Developer",
+    sub: "Sololearn",
+    badge: "CERT",
+  },
+  {
+    year: "2022",
+    title: "Python Basic Programming",
+    sub: "Dicoding",
+    badge: "CERT",
+  },
+  {
+    year: "2022",
+    title: "Fundamental Web Development",
+    sub: "Dicoding",
+    badge: "CERT",
+  },
+];
+
+// warna garis kiri + badge per jenis
+const BADGE_STYLE: Record<
+  Achievement["badge"],
+  { bar: string; bg: string; fg: string }
+> = {
+  AWARD: { bar: "#D9A441", bg: "#EFD9A8", fg: "#8a6a1c" },
+  WORK: { bar: "#6F9BC0", bg: "#D5E4F0", fg: "#2f5f86" },
+  EDU: { bar: "#9B86C0", bg: "#E3DAF0", fg: "#5d4a86" },
+  SHIPPED: { bar: "#5B9A82", bg: "#D3E8DF", fg: "#2f6b53" },
+  CERT: { bar: "#CC6F6A", bg: "#F3D6D4", fg: "#8e3b36" },
+};
 
 const NOTES = [
   // x,y = posisi berserakan (%), tx,ty = posisi rapi saat hover (%)
@@ -230,11 +283,13 @@ const NOTES = [
 ];
 
 const JOURNEY = [
-  { n: "01", t: "Mulai belajar", tag: "2019" },
-  { n: "02", t: "Kuliah Informatika", tag: "2020" },
-  { n: "03", t: "Proyek pertama", tag: "2022" },
-  { n: "04", t: "Lulus S.Kom.", tag: "2025" },
-  { n: "05", t: "Isi sesuai perjalananmu", tag: "NOW", now: true },
+  { n: "01", t: "Began My CS Journey", tag: "2022" },
+  { n: "02", t: "Active in Student Organizations", tag: "2023" },
+  { n: "03", t: "First Internship", tag: "2024" },
+  { n: "04", t: "Second Internship", tag: "2026" },
+  { n: "05", t: "Final Project & Defense", tag: "2026" },
+  { n: "06", t: "Graduated in Computer Science", tag: "2026" },
+  { n: "07", t: "Open to Opportunities", tag: "NOW", now: true },
 ];
 
 const FUEL = [
@@ -247,9 +302,9 @@ const FUEL = [
 ];
 
 const FACT_PHOTOS: (string | undefined)[] = [
-  "https://picsum.photos/seed/fact1/600/600",
-  "https://picsum.photos/seed/fact2/600/600",
-  "https://picsum.photos/seed/fact3/600/600",
+  "/photo/re.webp",
+  "/photo/shf.webp",
+  "/photo/sh.webp",
 ];
 
 type TabId = "projects" | "snapshot" | "achievements" | "garden";
@@ -278,9 +333,12 @@ function Shot({
   if (natural) {
     return (
       // eslint-disable-next-line @next/next/no-img-element
-      <img
+      <Image
         src={src}
         alt={alt}
+        width={1600}
+        height={1200}
+        sizes="(min-width: 1024px) 40vw, 90vw"
         className="h-auto w-full rounded-md border border-stone-300/50"
       />
     );
@@ -640,13 +698,69 @@ function ProjectsTab() {
 
 /* ========================= TAB: ACHIEVEMENTS ========================= */
 
+function AchievementItem({ a }: { a: Achievement }) {
+  const s = BADGE_STYLE[a.badge];
+
+  const inner = (
+    <>
+      <span className="w-9 shrink-0 pt-0.5 font-mono text-[9px] text-stone-400">
+        {a.year}
+      </span>
+      <div className="min-w-0 flex-1">
+        <div className="text-[12px] font-semibold text-stone-700">
+          {a.title}
+        </div>
+        <div className="mt-0.5 flex flex-wrap items-center gap-2 text-[10px] text-stone-500">
+          {a.sub}
+          <span
+            className="rounded px-1.5 py-px font-mono text-[8px]"
+            style={{ background: s.bg, color: s.fg }}
+          >
+            {a.badge}
+          </span>
+        </div>
+      </div>
+      {a.href && (
+        <span className="self-center text-[11px] text-stone-300 transition-colors group-hover:text-stone-500">
+          ↗
+        </span>
+      )}
+    </>
+  );
+
+  const cls =
+    "group flex gap-3 rounded-lg border border-l-[4px] border-stone-300/40 bg-white/50 px-3 py-2.5 " +
+    "transition-all duration-200 ease-out " +
+    "hover:-translate-y-0.5 hover:bg-white hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] " +
+    "active:translate-y-0 active:scale-[0.99] " +
+    (a.href ? "cursor-pointer" : "cursor-default");
+
+  const style = { borderLeftColor: s.bar };
+
+  return a.href ? (
+    <a
+      href={a.href}
+      target="_blank"
+      rel="noreferrer"
+      className={cls}
+      style={style}
+    >
+      {inner}
+    </a>
+  ) : (
+    <div className={cls} style={style}>
+      {inner}
+    </div>
+  );
+}
+
 function AchievementsTab() {
   return (
     <div className="h-full overflow-y-auto px-4 py-5 lg:px-8 lg:py-6">
       <p className="mb-2 font-mono text-[9px] uppercase tracking-[0.15em] text-stone-400">
         Impact at a glance
       </p>
-      <div className="grid grid-cols-3 gap-2 lg:gap-3">
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:gap-3">
         {STATS.map((s) => (
           <div
             key={s.label}
@@ -662,29 +776,24 @@ function AchievementsTab() {
         ))}
       </div>
 
-      <p className="mb-1 mt-6 font-mono text-[9px] uppercase tracking-[0.15em] text-stone-400">
-        {ACHIEVEMENTS.length} projects &amp; roles
+      <p className="mb-2 mt-6 font-mono text-[9px] uppercase tracking-[0.15em] text-stone-400">
+        Awards &amp; milestones
       </p>
-      <ul>
+      <ul className="space-y-2">
         {ACHIEVEMENTS.map((a, i) => (
-          <li
-            key={i}
-            className="flex gap-3 border-b border-stone-300/30 py-2.5 last:border-0"
-          >
-            <span className="w-8 shrink-0 pt-0.5 font-mono text-[9px] text-stone-400">
-              {a.year}
-            </span>
-            <div className="min-w-0 flex-1">
-              <div className="text-[12px] font-semibold text-stone-700">
-                {a.title}
-              </div>
-              <div className="flex flex-wrap items-center gap-2 text-[10px] text-stone-500">
-                {a.sub}
-                <span className="rounded bg-[#EFD9A8] px-1.5 py-px font-mono text-[8px] text-[#8a6a1c]">
-                  {a.badge}
-                </span>
-              </div>
-            </div>
+          <li key={i}>
+            <AchievementItem a={a} />
+          </li>
+        ))}
+      </ul>
+
+      <p className="mb-2 mt-6 font-mono text-[9px] uppercase tracking-[0.15em] text-stone-400">
+        Certifications
+      </p>
+      <ul className="space-y-2">
+        {CERTIFICATES.map((a, i) => (
+          <li key={i}>
+            <AchievementItem a={a} />
           </li>
         ))}
       </ul>
@@ -1019,7 +1128,7 @@ function FunFactsCard() {
 
   return (
     <Card
-      title="Fun facts"
+      title="Curated Nightmares"
       className="min-h-[280px] lg:col-span-2 lg:min-h-0"
       {...bind}
     >

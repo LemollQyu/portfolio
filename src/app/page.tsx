@@ -20,10 +20,10 @@ export default function Home() {
       />
 
       <main
-        className="relative min-h-screen overflow-x-hidden
-                   flex flex-col items-center gap-10 px-4 pb-20 pt-[330px]
-                   sm:pt-[360px]
-                   md:block md:gap-0 md:p-0 md:pr-[260px] md:overflow-visible"
+        className="relative min-h-screen overflow-x-clip
+             flex flex-col items-center gap-10 px-4 pb-20 pt-[330px]
+             sm:pt-[360px]
+             md:block md:gap-0 md:p-0 md:pr-[260px] md:overflow-visible"
       >
         {/* Badge */}
         <div
@@ -156,7 +156,7 @@ export default function Home() {
         </div>
 
         {/* Scrapbook */}
-        <div className="relative z-0 w-full max-w-[560px] md:z-auto md:max-w-none md:w-auto">
+        <div className="relative z-0 w-full max-w-[560px] sm:min-h-[480px] md:min-h-0 md:z-auto md:max-w-none md:w-auto">
           <KraftScrapbook />
         </div>
         <div className="absolute md:right-60 right-28  z-20 rotate-12 w-[clamp(140px,15vw,230px)] md:block lg:right-[300px] top-60">
