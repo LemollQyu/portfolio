@@ -18,6 +18,7 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "picsum.photos",
       },
+      
     ],
   },
   allowedDevOrigins: ["*.trycloudflare.com", "*.ngrok-free.app"],

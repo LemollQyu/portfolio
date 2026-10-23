@@ -47,7 +47,7 @@ export default function StickyNote({
 
         {/* Teks */}
         <p
-          className="absolute left-[13%] right-[11%] top-[27%] font-medium leading-[1.75] text-stone-600"
+          className="absolute font-synt left-[13%] right-[11%] top-[27%] font-medium leading-[1.75] text-stone-600"
           style={{ fontSize: "3.8cqw" }}
         >
           {text}

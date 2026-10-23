@@ -37,7 +37,8 @@ const VINYL_CSS = `
 }
 
 /* Piringan berputar hanya saat hover; lepas hover -> kembali ke posisi awal */
-.vinyl-link:hover .vinyl-spin {
+.vinyl-link:hover .vinyl-spin,
+html[data-sound="on"] .vinyl-spin {
   animation: vinyl-spin 3s linear infinite;
   transform-origin: 50% 50%;
 }
@@ -104,6 +105,7 @@ const VINYL_CSS = `
 
 @media (prefers-reduced-motion: reduce) {
   .vinyl-link:hover .vinyl-spin,
+  html[data-sound="on"] .vinyl-spin,
   .vinyl-border,
   .vinyl-blob,
   .vinyl-entrance {

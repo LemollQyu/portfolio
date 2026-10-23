@@ -79,14 +79,19 @@ const FOLDERS: Folder[] = [
           "Each course page covers what you will learn, course details, and the instructor's profile, while the lesson view combines a video player with a module list that tracks progress and unlocks the next material. It also includes a course management page with announcements and a profile page for account settings. Everything is wrapped in a calm, consistent green design that keeps learning focused and easy on the eyes.",
         ],
       },
+
       {
         id: "work5",
-        title: "Travel Chatour",
-        back: "#5E8B6C",
-        front: "#6E9B7C",
-        shots: 2,
-        cover: "/showcase/a1.webp",
-        desc: ["cek"],
+        title: "Chatour Travel",
+        back: "#D8B49A",
+        front: "#F4D5C0",
+        shots: 0,
+        cover: "/showcase/d1.webp",
+        desc: [
+          "A modern travel booking platform designed to provide a seamless and comfortable pilgrimage experience.",
+          "Featuring an intuitive booking system for Umrah and Hajj packages, departure schedules, travel services, and virtual tours of the Holy Mosques.",
+          "Designed with a warm, elegant visual identity that combines a user-friendly interface with a sense of trust, comfort, and spirituality.",
+        ],
       },
     ],
   },
@@ -140,29 +145,22 @@ const FOLDERS: Folder[] = [
     ],
   },
   {
-    id: "community",
-    title: "Community Impact",
-    back: "#7DB49B",
-    front: "#8DC4AB",
-    shots: 4,
-    desc: ["Kontribusi untuk komunitas, open source, atau acara."],
-    button: "Lihat repo",
-  },
-  {
     id: "lens",
     title: "Through My Lens",
     back: "#D08D88",
     front: "#E09D98",
-    shots: 4,
-    desc: ["Foto dan momen yang kamu abadikan."],
-  },
-  {
-    id: "sketch",
-    title: "From Sketch to Merch",
-    back: "#A08AC0",
-    front: "#B09AD0",
-    shots: 2,
-    desc: ["Dari sketsa sampai jadi produk."],
+    shots: 8,
+    images: [
+      "https://picsum.photos/seed/oldmemories/1200/800",
+      "https://picsum.photos/seed/sunsetmoments/1200/800",
+      "https://picsum.photos/seed/childhooddays/1200/800",
+      "https://picsum.photos/seed/forgottenplaces/1200/800",
+      "https://picsum.photos/seed/goldenhours/1200/800",
+      "https://picsum.photos/seed/littlemoments/1200/800",
+      "https://picsum.photos/seed/foreveryoung/1200/800",
+      "https://picsum.photos/seed/nostalgicdays/1200/800",
+    ],
+    desc: ["Little moments, lasting memories."],
   },
 ];
 
@@ -621,6 +619,7 @@ function ProjectsTab() {
 
       {/* Panel detail: meluncur dari kanan */}
       <aside
+        data-lenis-prevent
         className={`absolute inset-y-0 right-0 z-10 w-full overflow-y-auto border-l border-stone-300/40 bg-[#F8F7F5] transition-transform duration-[350ms] ease-out lg:w-[58%] ${
           current ? "translate-x-0" : "pointer-events-none translate-x-full"
         }`}
@@ -654,16 +653,14 @@ function ProjectsTab() {
                       : "grid-cols-3"
                 }`}
               >
-                {Array.from({ length: Math.min(current.shots ?? 0, 3) }).map(
-                  (_, i) => (
-                    <Shot
-                      key={i}
-                      src={current.images?.[i]}
-                      ratio="4 / 3"
-                      alt={`${current.title} ${i + 1}`}
-                    />
-                  ),
-                )}
+                {Array.from({ length: current.shots ?? 0 }).map((_, i) => (
+                  <Shot
+                    key={i}
+                    src={current.images?.[i]}
+                    ratio="4 / 3"
+                    alt={`${current.title} ${i + 1}`}
+                  />
+                ))}
               </div>
             )}
 
@@ -756,7 +753,10 @@ function AchievementItem({ a }: { a: Achievement }) {
 
 function AchievementsTab() {
   return (
-    <div className="h-full overflow-y-auto px-4 py-5 lg:px-8 lg:py-6">
+    <div
+      data-lenis-prevent
+      className="h-full overflow-y-auto px-4 py-5 lg:px-8 lg:py-6"
+    >
       <p className="mb-2 font-mono text-[9px] uppercase tracking-[0.15em] text-stone-400">
         Impact at a glance
       </p>
@@ -1161,7 +1161,10 @@ function FunFactsCard() {
 
 function SnapshotTab() {
   return (
-    <div className="h-full overflow-y-auto p-3 lg:overflow-hidden lg:p-4">
+    <div
+      data-lenis-prevent
+      className="h-full overflow-y-auto p-3 lg:overflow-hidden lg:p-4"
+    >
       <div className="grid grid-cols-1 gap-3 lg:h-full lg:grid-cols-3 lg:grid-rows-[minmax(0,1fr)_minmax(0,1.6fr)]">
         <DesignNotesCard />
         <EnergyCard />
@@ -1185,25 +1188,143 @@ function rng(seed: number) {
   };
 }
 
-const COUNT = 120;
+// // test
+// const GARDEN_START = Date.now() - 180 * 1000; // mulai 180 detik "sudah berjalan"
+// const BLOOM_EVERY = 1000; // 1 bunga per 1 detik
+// const MAX_FLOWERS = 10; // 10 bunga per siklus
+// const HOLD = 15 * 1000; // kondisi lengkap bertahan 15 detik
+
+// ---- pengaturan ----
+const GARDEN_START = new Date("2026-10-22T13:50:00+07:00").getTime();
+// const GARDEN_START = new Date("2026-10-22T00:00:00+07:00").getTime(); //mkas
+const BLOOM_EVERY = 1 * 60 * 1000; // 1 bunga per 1 menit
+const MAX_FLOWERS = 60; // bunga per siklus (penuh -> kosong -> mengulang)
+const HOLD = 10 * 60 * 1000; // lama kondisi "lengkap" ditampilkan sebelum reset (10 menit)
+const FLOWER_IMAGES = [
+  { src: "/lily.webp", k: 1 },
+  { src: "/higanbana4.webp", k: 1.8 },
+  { src: "/cursor-lily.webp", k: 1 },
+];
+
+// Slot pinggiran untuk /h.webp. Muncul berurutan tiap satu siklus selesai.
+// side: bawah/atas/kiri/kanan, pos: posisi di sisi itu (%)
+type EdgeSlot = {
+  side: "bottom" | "top" | "left" | "right";
+  pos: number;
+  w: number; // lebar (px)
+  flip?: boolean;
+};
+const EDGE_SLOTS: EdgeSlot[] = [
+  { side: "bottom", pos: 82, w: 190 },
+  { side: "bottom", pos: 12, w: 170, flip: true },
+  { side: "left", pos: 60, w: 150 },
+  { side: "right", pos: 35, w: 150, flip: true },
+  { side: "bottom", pos: 48, w: 180 },
+  { side: "top", pos: 25, w: 150 },
+  { side: "right", pos: 78, w: 140 },
+  { side: "top", pos: 72, w: 160, flip: true },
+  { side: "left", pos: 18, w: 140, flip: true },
+  { side: "bottom", pos: 30, w: 130 },
+  { side: "bottom", pos: 65, w: 130, flip: true },
+  { side: "top", pos: 50, w: 130 },
+  { side: "left", pos: 40, w: 130, flip: true },
+  { side: "right", pos: 56, w: 130 },
+  { side: "top", pos: 38, w: 120, flip: true },
+  { side: "top", pos: 88, w: 130 },
+  { side: "left", pos: 85, w: 120 },
+  { side: "right", pos: 12, w: 120, flip: true },
+  { side: "bottom", pos: 94, w: 110 },
+  { side: "top", pos: 8, w: 110, flip: true },
+];
+
+// posisi jangkar + rotasi supaya pangkal bunga menempel di pinggir
+const edgeStyle = (s: EdgeSlot) => {
+  switch (s.side) {
+    case "bottom":
+      return { left: `${s.pos}%`, top: "100%", rot: 0 };
+    case "top":
+      return { left: `${s.pos}%`, top: "0%", rot: 180 };
+    case "left":
+      return { left: "0%", top: `${s.pos}%`, rot: 90 };
+    default:
+      return { left: "100%", top: `${s.pos}%`, rot: -90 };
+  }
+};
+
+const COLS = 12;
+const ROWS = Math.ceil(MAX_FLOWERS / COLS);
 const R = rng(7);
-const FLOWERS = Array.from({ length: COUNT }, (_, i) => {
+const FLOWERS = Array.from({ length: MAX_FLOWERS }, (_, i) => {
   const spread = R() < 0.6 ? 0.55 : 1;
-  const x = 50 + (R() - 0.5) * 92 * spread;
-  const y = 50 + (R() - 0.5) * 84 * spread;
-  const cols = 15;
   return {
-    scatter: { x, y },
-    tidy: {
-      x: 6 + (i % cols) * (88 / (cols - 1)),
-      y: 8 + Math.floor(i / cols) * 12,
+    scatter: {
+      x: 50 + (R() - 0.5) * 92 * spread,
+      y: 50 + (R() - 0.5) * 84 * spread,
     },
-    e: i % 3 === 0 ? "🌷" : i % 3 === 1 ? "🌸" : "🌼",
+    tidy: {
+      x: 6 + (i % COLS) * (88 / (COLS - 1)),
+      y: 8 + Math.floor(i / COLS) * (84 / Math.max(1, ROWS - 1)),
+    },
+    img: FLOWER_IMAGES[Math.floor(R() * FLOWER_IMAGES.length)],
+    size: 44 + Math.floor(R() * 16), // 44-59px, rentang sempit biar wajar
+    rot: Math.floor((R() - 0.5) * 30),
   };
 });
 
+/** Hitung keadaan kebun dari waktu */
+/** Hitung keadaan kebun dari waktu. Berulang: satu putaran = semua slot terisi + HOLD */
+function gardenState(now: number) {
+  const ROUND = EDGE_SLOTS.length * MAX_FLOWERS * BLOOM_EVERY;
+
+  // sebelum start
+  if (now < GARDEN_START) {
+    return {
+      flowers: 0,
+      edges: 0,
+      done: false,
+      left: GARDEN_START - now + BLOOM_EVERY,
+    };
+  }
+
+  const t = (now - GARDEN_START) % (ROUND + HOLD);
+
+  // kondisi lengkap, menunggu reset
+  if (t >= ROUND) {
+    return {
+      flowers: MAX_FLOWERS,
+      edges: EDGE_SLOTS.length,
+      done: true,
+      left: ROUND + HOLD - t,
+    };
+  }
+
+  const total = Math.floor(t / BLOOM_EVERY);
+  return {
+    flowers: total % MAX_FLOWERS,
+    edges: Math.floor(total / MAX_FLOWERS),
+    done: false,
+    left: BLOOM_EVERY - (t % BLOOM_EVERY),
+  };
+}
+
 function GardenTab() {
   const [tidy, setTidy] = useState(false);
+  const [now, setNow] = useState<number | null>(null);
+
+  useEffect(() => {
+    setNow(Date.now());
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const st =
+    now === null
+      ? { flowers: 0, edges: 0, done: false, left: 0 }
+      : gardenState(now);
+
+  const s = Math.ceil(st.left / 1000);
+  const mmss = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+
   return (
     <div className="flex h-full flex-col px-3 pb-3 pt-3 lg:px-5 lg:pt-4">
       <div className="mb-2 flex items-start justify-between gap-2">
@@ -1212,7 +1333,10 @@ function GardenTab() {
             Community garden
           </p>
           <p className="text-[10px] text-stone-500">
-            {COUNT} flowers planted by visitors
+            {st.done
+              ? `garden is complete · restarting in ${mmss}`
+              : `${st.flowers}/${MAX_FLOWERS} flowers · next bloom in ${mmss}`}
+            {` · ${st.edges}/${EDGE_SLOTS.length} grown`}
           </p>
         </div>
         <div className="flex shrink-0 overflow-hidden rounded-full border border-stone-300/60 text-[10px]">
@@ -1231,20 +1355,60 @@ function GardenTab() {
         </div>
       </div>
 
-      <div className="relative min-h-0 flex-1 overflow-hidden rounded-lg border border-stone-300/40 bg-[#F0EEE8]">
-        {FLOWERS.map((f, i) => {
+      <div className="relative min-h-0 flex-1 overflow-hidden rounded-lg border border-stone-300/40 bg-[#F0EEE8] [--edge-scale:0.6] lg:[--edge-scale:1]">
+        {/* bunga di pinggiran (hasil siklus yang sudah selesai) */}
+        {EDGE_SLOTS.slice(0, st.edges).map((s, i) => {
+          const e = edgeStyle(s);
+          return (
+            <div
+              key={`edge-${i}`}
+              className="pointer-events-none absolute z-[1] select-none"
+              style={{
+                left: e.left,
+                top: e.top,
+                width: `calc(${s.w}px * var(--edge-scale))`,
+                transformOrigin: "50% 100%",
+                transform: `translate(-50%, -100%) rotate(${e.rot}deg)`,
+              }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/h.webp"
+                alt=""
+                draggable={false}
+                className="block h-auto w-full animate-[edgeGrow_1600ms_cubic-bezier(0.22,1,0.36,1)_both]"
+                style={{
+                  transformOrigin: "50% 100%",
+                  scale: s.flip ? "-1 1" : "1 1",
+                }}
+              />
+            </div>
+          );
+        })}
+
+        {/* bunga kebun */}
+        {FLOWERS.slice(0, st.flowers).map((f, i) => {
           const p = tidy ? f.tidy : f.scatter;
           return (
             <span
               key={i}
-              className="absolute -translate-x-1/2 -translate-y-1/2 select-none text-[13px] transition-all duration-700 ease-out"
+              className="absolute z-[2] -translate-x-1/2 -translate-y-1/2 select-none transition-all duration-700 ease-out"
               style={{
                 left: `${p.x}%`,
                 top: `${p.y}%`,
+                width: f.size * f.img.k,
+                height: f.size * f.img.k,
                 transitionDelay: `${(i % 12) * 20}ms`,
               }}
             >
-              {f.e}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={f.img.src}
+                alt=""
+                draggable={false}
+                className="block h-full w-full object-contain animate-[bloom_900ms_cubic-bezier(0.34,1.5,0.64,1)_both]"
+                style={{ rotate: `${f.rot}deg` }}
+              />
             </span>
           );
         })}
